@@ -1,0 +1,15 @@
+// !$*UTF8*$!
+{
+	objects = {
+		97C147061CF9000F007C117D /* Debug */ = {
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.myShop;
+			};
+		};
+		331C8088294A63A400263BE5 /* Debug */ = {
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.myShop.RunnerTests;
+			};
+		};
+	};
+}

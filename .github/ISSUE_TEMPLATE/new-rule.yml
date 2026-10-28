@@ -1,0 +1,23 @@
+name: New rule
+description: Propose a new release check (a rejection you hit, a release-only crash)
+labels: [new-rule]
+body:
+  - type: textarea
+    id: rejection
+    attributes:
+      label: What happened
+      description: Paste the Play Console / App Store Connect message or ITMS code, or describe the release-only bug.
+    validations:
+      required: true
+  - type: textarea
+    id: cause
+    attributes:
+      label: What in the project caused it (smallest example)
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: The fix
+    validations:
+      required: true

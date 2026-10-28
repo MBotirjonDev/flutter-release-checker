@@ -1,0 +1,10 @@
+// !$*UTF8*$!
+{
+	objects = {
+		97C147061CF9000F007C117D /* Release */ = {
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = uz.agroshop.app;
+			};
+		};
+	};
+}

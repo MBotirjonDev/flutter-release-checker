@@ -1,0 +1,50 @@
+name: 'Flutter Release Checker'
+description: 'Zero-dependency check for what gets Flutter apps rejected by Google Play and the App Store: signing, targetSdk, purpose strings, account deletion and more.'
+author: 'MBotirjonDev'
+branding:
+  icon: 'check-circle'
+  color: 'green'
+
+inputs:
+  path:
+    description: 'Path to the Flutter app (or monorepo root)'
+    required: false
+    default: '.'
+  store:
+    description: 'play | app-store | both'
+    required: false
+    default: 'both'
+  fail-on:
+    description: 'Fail the job at or above this severity: info | low | medium | high | blocker | none'
+    required: false
+    default: 'blocker'
+  output:
+    description: 'Where to write the JSON leads file'
+    required: false
+    default: 'flutter-release-leads.json'
+  sarif:
+    description: 'Optional path for a SARIF file'
+    required: false
+    default: ''
+
+outputs:
+  leads-file:
+    description: 'Path to the JSON leads file'
+    value: ${{ inputs.output }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run flutter-release-readiness checker
+      shell: bash
+      env:
+        FRC_PATH: ${{ inputs.path }}
+        FRC_STORE: ${{ inputs.store }}
+        FRC_FAIL_ON: ${{ inputs.fail-on }}
+        FRC_OUT: ${{ inputs.output }}
+        FRC_SARIF: ${{ inputs.sarif }}
+      run: |
+        args=("$FRC_PATH" --store "$FRC_STORE" --out "$FRC_OUT")
+        if [ -n "$FRC_SARIF" ]; then args+=(--sarif "$FRC_SARIF"); fi
+        if [ "$FRC_FAIL_ON" != "none" ]; then args+=(--fail-on "$FRC_FAIL_ON"); fi
+        node "${{ github.action_path }}/skills/flutter-release-readiness/scripts/check.cjs" "${args[@]}"

@@ -1,0 +1,17 @@
+{
+  "name": "flutter-release-checker",
+  "version": "0.1.0",
+  "description": "Release-readiness skill for AI coding agents (Claude Code, Codex, Cursor) and a zero-dependency checker that finds what gets Flutter apps rejected by Google Play and the App Store.",
+  "private": true,
+  "license": "MIT",
+  "author": "Botirjon (https://github.com/MBotirjonDev)",
+  "repository": { "type": "git", "url": "https://github.com/MBotirjonDev/flutter-release-checker.git" },
+  "bin": { "flutter-release-check": "skills/flutter-release-readiness/scripts/check.cjs" },
+  "scripts": {
+    "test": "node tests/check.test.cjs",
+    "check": "node skills/flutter-release-readiness/scripts/check.cjs",
+    "package:skill": "node scripts/package-skill.cjs"
+  },
+  "engines": { "node": ">=18" },
+  "keywords": ["flutter", "dart", "release", "google-play", "app-store", "app-store-connect", "play-console", "itms-90683", "privacy-manifest", "claude-code", "agent-skills"]
+}

@@ -1,0 +1,23 @@
+name: shop
+description: "Order groceries from your local Agro shop."
+publish_to: 'none'
+version: 1.4.0+27
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.2
+  image_picker: ^1.1.2
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.1.2
+  firebase_auth: ^5.3.1
+  shop_ui:
+    git:
+      url: https://github.com/example-org/shop_ui.git
+      ref: v2.3.1
+
+flutter:
+  uses-material-design: true
