@@ -1,5 +1,5 @@
 name: 'Flutter Release Checker'
-description: 'Zero-dependency check for what gets Flutter apps rejected by Google Play and the App Store: signing, targetSdk, purpose strings, account deletion and more.'
+description: 'Finds what gets Flutter apps rejected by Google Play and App Store: signing, targetSdk, purpose strings, account deletion.'
 author: 'MBotirjonDev'
 branding:
   icon: 'check-circle'
