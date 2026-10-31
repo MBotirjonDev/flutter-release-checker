@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="729" viewBox="0 0 1280 729" role="img" aria-label="Real output on the intentionally vulnerable test fixture">
+<rect width="1280" height="729" rx="14" fill="#0D1117"/>
+<rect width="1280" height="48" rx="14" fill="#161B22"/><rect y="34" width="1280" height="14" fill="#161B22"/>
+<circle cx="28" cy="24" r="7" fill="#FF5F57"/><circle cx="52" cy="24" r="7" fill="#FEBC2E"/><circle cx="76" cy="24" r="7" fill="#28C840"/>
+<text x="640.0" y="30" text-anchor="middle" font-family="Inter, 'Segoe UI', -apple-system, Helvetica, Arial, sans-serif" font-size="15" fill="#8B949E">flutter-release-checker — release readiness</text>
+<g font-family="'JetBrains Mono', SFMono-Regular, Consolas, 'DejaVu Sans Mono', Menlo, monospace" font-size="17" xml:space="preserve">
+<text x="40" y="100"><tspan fill="#7EE787">➜</tspan><tspan fill="#79C0FF"> my_shop</tspan><tspan fill="#E6EDF3"> node check.cjs .</tspan></text>
+<text x="40" y="141.6" fill="#8B949E">flutter-release-readiness · my_shop · 29 rules</text>
+<text x="40" y="180.6"><tspan fill="#FF7B72" font-weight="700">BLOCKER  </tspan><tspan fill="#D2A8FF">FRC-AND-001</tspan><tspan fill="#E6EDF3">  Template applicationId (com.example)</tspan></text>
+<text x="133" y="206.6" fill="#79C0FF">android/app/build.gradle:12<tspan fill="#6E7681">   applicationId = "com.example.my_shop"</tspan></text>
+<text x="40" y="241.7"><tspan fill="#FF7B72" font-weight="700">BLOCKER  </tspan><tspan fill="#D2A8FF">FRC-AND-002</tspan><tspan fill="#E6EDF3">  Release build signed with the debug key</tspan></text>
+<text x="133" y="267.7" fill="#79C0FF">android/app/build.gradle:23<tspan fill="#6E7681">   signingConfig = signingConfigs.debug</tspan></text>
+<text x="40" y="302.8"><tspan fill="#FF7B72" font-weight="700">BLOCKER  </tspan><tspan fill="#D2A8FF">FRC-AND-003</tspan><tspan fill="#E6EDF3">  targetSdk below the Google Play requirement</tspan></text>
+<text x="133" y="328.8" fill="#79C0FF">android/app/build.gradle:14<tspan fill="#6E7681">   targetSdk = 33</tspan></text>
+<text x="40" y="363.90000000000003"><tspan fill="#FF7B72" font-weight="700">BLOCKER  </tspan><tspan fill="#D2A8FF">FRC-IOS-002</tspan><tspan fill="#E6EDF3">  Missing NSCameraUsageDescription (camera)</tspan></text>
+<text x="133" y="389.90000000000003" fill="#79C0FF">ios/Runner/Info.plist:4<tspan fill="#6E7681">   &lt;dict&gt;</tspan></text>
+<text x="40" y="425.00000000000006"><tspan fill="#FFA657" font-weight="700">HIGH     </tspan><tspan fill="#D2A8FF">FRC-AND-004</tspan><tspan fill="#E6EDF3">  INTERNET permission missing from the release manifest</tspan></text>
+<text x="133" y="451.00000000000006" fill="#79C0FF">android/app/src/main/AndroidManifest.xml:1<tspan fill="#6E7681">   &lt;manifest xmlns:android="http://schemas.android.c…</tspan></text>
+<text x="40" y="486.1000000000001"><tspan fill="#FFA657" font-weight="700">HIGH     </tspan><tspan fill="#D2A8FF">FRC-POL-001</tspan><tspan fill="#E6EDF3">  Account creation without in-app account deletion</tspan></text>
+<text x="133" y="512.1000000000001" fill="#79C0FF">lib/main.dart:7<tspan fill="#6E7681">   await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, pas…</tspan></text>
+<text x="40" y="547.2000000000002"><tspan fill="#E3B341" font-weight="700">MEDIUM   </tspan><tspan fill="#D2A8FF">FRC-DART-001</tspan><tspan fill="#E6EDF3">  Development server URL in app code</tspan></text>
+<text x="133" y="573.2000000000002" fill="#79C0FF">lib/main.dart:4<tspan fill="#6E7681">   const apiBase = 'http://10.0.2.2:8000/api';</tspan></text>
+<text x="40" y="608.3000000000002"><tspan fill="#E3B341" font-weight="700">MEDIUM   </tspan><tspan fill="#D2A8FF">FRC-POL-002</tspan><tspan fill="#E6EDF3">  Third-party login without Sign in with Apple</tspan></text>
+<text x="133" y="634.3000000000002" fill="#79C0FF">pubspec.yaml:21<tspan fill="#6E7681">   google_sign_in: ^6.2.1</tspan></text>
+<text x="40" y="669.4000000000002"><tspan fill="#E6EDF3" font-weight="700">30 leads</tspan><tspan fill="#8B949E">  (</tspan><tspan fill="#FF7B72">blocker 11</tspan><tspan fill="#8B949E"> · </tspan><tspan fill="#FFA657">high 5</tspan><tspan fill="#8B949E"> · </tspan><tspan fill="#E3B341">medium 5</tspan><tspan fill="#8B949E"> · </tspan><tspan fill="#79C0FF">low 5</tspan><tspan fill="#8B949E"> · </tspan><tspan fill="#8B949E">info 4</tspan><tspan fill="#8B949E">)  →  each one is a rejected upload you skip</tspan></text>
+</g></svg>

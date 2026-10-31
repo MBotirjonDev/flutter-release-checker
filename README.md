@@ -1,6 +1,8 @@
 <div align="center">
 
-# Flutter Release Checker
+<img src="assets/banner.png" alt="Flutter Release Checker" width="100%">
+
+<h1>Flutter Release Checker</h1>
 
 <h3>Ship your Flutter app to Google Play and the App Store on the first try.</h3>
 
@@ -21,6 +23,9 @@ plus a zero-dependency checker for your laptop and your CI.</p>
 > ```
 > is my flutter app ready for the app store?
 > ```
+
+<p align="center"><img src="assets/demo.png" alt="Real output of Flutter Release Checker on the intentionally vulnerable test fixture" width="100%"></p>
+<p align="center"><sub>Real output on the intentionally vulnerable fixture in <code>tests/fixtures/vuln_app</code>.</sub></p>
 
 ## Why this exists
 
@@ -184,6 +189,24 @@ type still points at the debug signing config, as its own comment notes.
 - [ ] macOS and Flutter Web release checks
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Part of a toolkit
+
+Four zero-dependency agent skills that share the same lead → validate → report workflow.
+They work well together on a typical Flutter + Supabase + Telegram stack.
+
+| Skill | What it covers |
+|---|---|
+| [Flutter Audit Agent](https://github.com/MBotirjonDev/flutter-audit-agent) | Security audit for Flutter & Dart apps: secrets, storage, TLS, WebViews, Firebase rules |
+| [Telegram Mini App Audit](https://github.com/MBotirjonDev/telegram-miniapp-audit) | Security audit for Telegram bots and Mini Apps: initData, bot tokens, webhooks, payments |
+| [Supabase RLS Audit](https://github.com/MBotirjonDev/supabase-rls-audit) | Row Level Security audit: open tables, weak policies, definer views and functions, storage |
+| **[Flutter Release Checker](https://github.com/MBotirjonDev/flutter-release-checker)** (you are here) | Finds what gets Flutter apps rejected by Google Play and the App Store |
+
+## Star history
+
+If this saved you a leak or a rejected upload, a ⭐ helps other developers find it.
+
+[![Star History Chart](https://api.star-history.com/svg?repos=MBotirjonDev/flutter-release-checker&type=Date)](https://star-history.com/#MBotirjonDev/flutter-release-checker&Date)
 
 ## License
 

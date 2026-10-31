@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="assets/banner.png" alt="Flutter Release Checker" width="100%">
+
+</div>
+
 # Flutter Release Checker 🇺🇿
 
 **Flutter ilovangizni Google Play va App Store'ga birinchi urinishda chiqaring.**
@@ -48,3 +54,11 @@ blokerlar va faqat siz to'ldira oladigan formalar ro'yxati bo'ladi.
 Agent kalit fayllar va parollarni hech qachon yaratmaydi, ko'rsatmaydi va commit qilmaydi.
 
 MIT litsenziyasi. Google, Apple yoki Flutter jamoasi bilan bog'liq emas.
+
+## Boshqa skill'lar
+
+Shu muallifning boshqa bepul agent skill'lari:
+
+- [Flutter Audit Agent](https://github.com/MBotirjonDev/flutter-audit-agent) — Security audit for Flutter & Dart apps: secrets, storage, TLS, WebViews, Firebase rules
+- [Telegram Mini App Audit](https://github.com/MBotirjonDev/telegram-miniapp-audit) — Security audit for Telegram bots and Mini Apps: initData, bot tokens, webhooks, payments
+- [Supabase RLS Audit](https://github.com/MBotirjonDev/supabase-rls-audit) — Row Level Security audit: open tables, weak policies, definer views and functions, storage
