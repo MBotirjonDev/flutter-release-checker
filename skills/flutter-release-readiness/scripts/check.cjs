@@ -28,9 +28,24 @@ const SKIP_DIRS = new Set([
   '.vscode', '.fvm', 'ephemeral', '.pub-cache', 'coverage', '.plugin_symlinks', 'DerivedData',
 ]);
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
+const RELEASE_MERGED_MANIFESTS = [
+  'build/app/intermediates/merged_manifests/release/AndroidManifest.xml',
+  'build/app/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml',
+  'build/app/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml',
+];
 const TEST_PATH = /(^|\/)(test|integration_test|test_driver|fixtures?)\/|_test\.dart$/;
 // Example apps inside packages are not shipped; skipped unless --include-examples.
 const EXAMPLE_PATH = /(^|\/)(example|examples)\//;
+
+function releaseMergedManifest(root, app) {
+  for (const candidate of RELEASE_MERGED_MANIFESTS) {
+    const rel = `${app}${candidate}`;
+    try {
+      if (fs.lstatSync(path.join(root, rel)).isFile()) return rel;
+    } catch { /* exact candidate is absent */ }
+  }
+  return null;
+}
 
 function parseArgs(argv) {
   const args = { dir: null, out: null, sarif: null, store: 'both', minSeverity: 'info', failOn: null, quiet: false, includeExamples: false };
@@ -187,10 +202,12 @@ function check(rootDir, opts = {}) {
     .map((f) => f.slice(0, f.length - 'pubspec.yaml'.length));
   for (const app of apps) {
     const appFiles = files.filter((f) => f.startsWith(app) && appRootOf(f) === app);
+    const mergedManifest = releaseMergedManifest(root, app);
     const ctx = {
       files: appFiles,
       read,
       pubspec: { file: `${app}pubspec.yaml`, text: read(`${app}pubspec.yaml`) },
+      mergedManifest,
       lead: (file, text, index) => ({ file, text, index }),
     };
     for (const rule of PROJECT_RULES.filter(keep)) {
