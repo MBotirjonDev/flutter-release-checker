@@ -86,6 +86,66 @@ test('targetSdk rule ignores current levels and flutter.targetSdkVersion', () =>
   }
 });
 
+test('release merged manifest overrides source manifests for Android permissions at the exact path', () => {
+  const dir = path.join(tmp, 'merged_manifest');
+  copyDir(CLEAN, dir);
+  const sourceManifest = path.join(dir, 'android', 'app', 'src', 'main', 'AndroidManifest.xml');
+  fs.writeFileSync(sourceManifest, '<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>\n</manifest>\n');
+
+  const mergedPath = 'build/app/intermediates/merged_manifests/release/AndroidManifest.xml';
+  const mergedManifest = path.join(dir, mergedPath);
+  fs.mkdirSync(path.dirname(mergedManifest), { recursive: true });
+  fs.writeFileSync(mergedManifest, '<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.INTERNET"/>\n  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>\n</manifest>\n');
+
+  const unrelatedBuildManifest = path.join(dir, 'build', 'other', 'AndroidManifest.xml');
+  fs.mkdirSync(path.dirname(unrelatedBuildManifest), { recursive: true });
+  fs.writeFileSync(unrelatedBuildManifest, '<manifest><uses-permission android:name="android.permission.SEND_SMS"/></manifest>\n');
+
+  const r = check(dir);
+  const internet = r.leads.filter((l) => l.rule === 'FRC-AND-004');
+  const restricted = r.leads.filter((l) => l.rule === 'FRC-AND-005');
+  assert.strictEqual(internet.length, 0, 'merged INTERNET permission must suppress the false missing-permission lead');
+  assert.strictEqual(restricted.length, 1, 'same restricted permission in source and merged manifests must not duplicate');
+  assert.strictEqual(restricted[0].file, mergedPath, 'the exact release merged manifest should be the reported source');
+});
+
+test('nested Gradle release manifest variants are recognized without scanning other build outputs', () => {
+  const candidates = [
+    ['nested_plural', 'build/app/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml'],
+    ['nested_singular', 'build/app/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml'],
+  ];
+  for (const [name, mergedPath] of candidates) {
+    const dir = path.join(tmp, name);
+    copyDir(CLEAN, dir);
+    fs.writeFileSync(path.join(dir, 'android', 'app', 'src', 'main', 'AndroidManifest.xml'), '<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>\n</manifest>\n');
+
+    const mergedManifest = path.join(dir, mergedPath);
+    fs.mkdirSync(path.dirname(mergedManifest), { recursive: true });
+    fs.writeFileSync(mergedManifest, '<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.INTERNET"/>\n  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>\n</manifest>\n');
+
+    const unrelatedBuildManifest = path.join(dir, 'build', 'other', 'AndroidManifest.xml');
+    fs.mkdirSync(path.dirname(unrelatedBuildManifest), { recursive: true });
+    fs.writeFileSync(unrelatedBuildManifest, '<manifest><uses-permission android:name="android.permission.SEND_SMS"/></manifest>\n');
+
+    const r = check(dir);
+    const internet = r.leads.filter((l) => l.rule === 'FRC-AND-004');
+    const restricted = r.leads.filter((l) => l.rule === 'FRC-AND-005');
+    assert.strictEqual(internet.length, 0, `${name}: merged INTERNET permission must suppress the false missing-permission lead`);
+    assert.strictEqual(restricted.length, 1, `${name}: only the release merged restricted permission should be reported`);
+    assert.strictEqual(restricted[0].file, mergedPath, `${name}: report the nested release merged manifest`);
+  }
+});
+
+test('Android permission checks fall back to source manifests when the exact release merged manifest is absent', () => {
+  const r = check(VULN);
+  const internet = r.leads.filter((l) => l.rule === 'FRC-AND-004');
+  const restricted = r.leads.filter((l) => l.rule === 'FRC-AND-005');
+  assert.strictEqual(internet.length, 1);
+  assert.strictEqual(internet[0].file, 'android/app/src/main/AndroidManifest.xml');
+  assert.strictEqual(restricted.length, 1);
+  assert.strictEqual(restricted[0].file, 'android/app/src/main/AndroidManifest.xml');
+});
+
 test('purpose-string rules depend on the plugins in pubspec.yaml', () => {
   const dir = path.join(tmp, 'no_plugins');
   copyDir(CLEAN, dir);

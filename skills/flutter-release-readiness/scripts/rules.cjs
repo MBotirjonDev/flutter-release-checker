@@ -97,30 +97,6 @@ module.exports = [
     fix: 'Use targetSdk = flutter.targetSdkVersion on a current Flutter, or set 35+ and test runtime-permission and edge-to-edge changes.',
   },
   {
-    id: 'FRC-AND-004',
-    title: 'INTERNET permission missing from the release manifest',
-    severity: 'high',
-    store: 'play',
-    files: MAIN_MANIFEST,
-    pubspecRequires: pkgs('http', 'dio', 'web_socket_channel', 'cached_network_image', 'graphql_flutter', 'chopper', 'retrofit', 'supabase_flutter', 'google_fonts', 'socket_io_client', 'grpc'),
-    fileAbsent: /android\.permission\.INTERNET/,
-    pattern: /<manifest\b/g,
-    guide: 'ANDROID.md#internet-permission',
-    message: 'The Flutter template only declares INTERNET in the debug and profile manifests. Network calls work in debug and silently fail in the release build, unless a plugin adds the permission through manifest merging.',
-    fix: 'Add <uses-permission android:name="android.permission.INTERNET"/> to android/app/src/main/AndroidManifest.xml.',
-  },
-  {
-    id: 'FRC-AND-005',
-    title: 'Permission that needs a Play Console declaration',
-    severity: 'medium',
-    store: 'play',
-    files: ANY_MANIFEST,
-    pattern: /android\.permission\.(READ_SMS|RECEIVE_SMS|SEND_SMS|READ_CALL_LOG|WRITE_CALL_LOG|PROCESS_OUTGOING_CALLS|MANAGE_EXTERNAL_STORAGE|QUERY_ALL_PACKAGES|ACCESS_BACKGROUND_LOCATION|REQUEST_INSTALL_PACKAGES|READ_MEDIA_IMAGES|READ_MEDIA_VIDEO|USE_FULL_SCREEN_INTENT|USE_EXACT_ALARM|BIND_ACCESSIBILITY_SERVICE|FOREGROUND_SERVICE_[A-Z_]+)\b/g,
-    guide: 'ANDROID.md#restricted-permissions',
-    message: 'Google Play restricts this permission. Without a matching use case and a declaration form in Play Console, the release is rejected or the app is removed later.',
-    fix: 'Remove it if a narrower API exists (photo picker instead of READ_MEDIA_*, intent instead of SMS), otherwise fill in the Play Console declaration and show the feature in the review video.',
-  },
-  {
     id: 'FRC-AND-006',
     title: 'Signing keystore or key.properties in the project',
     severity: 'high',
@@ -282,8 +258,49 @@ module.exports = [
 // ---------------------------------------------------------------- project rules
 const SIGNUP = /createUserWithEmailAndPassword|\.signUp\s*\(|signUpWithEmail|\bregisterUser\s*\(|['"]\/?(api\/)?(auth\/)?(register|signup|sign-up)['"]/;
 const DELETION = /\.delete\s*\(\s*\)|deleteUser|deleteAccount|delete_account|deleteMe\b|removeAccount|accountDeletion|['"]\/?(api\/)?(auth\/)?(account|user|me)['"][^\n]*\.delete\b|\bdelete\s*\(\s*['"][^'"]*(account|user|me)['"]/i;
+const INTERNET_DEPENDENCIES = pkgs('http', 'dio', 'web_socket_channel', 'cached_network_image', 'graphql_flutter', 'chopper', 'retrofit', 'supabase_flutter', 'google_fonts', 'socket_io_client', 'grpc');
+const RESTRICTED_PERMISSION = /android\.permission\.(READ_SMS|RECEIVE_SMS|SEND_SMS|READ_CALL_LOG|WRITE_CALL_LOG|PROCESS_OUTGOING_CALLS|MANAGE_EXTERNAL_STORAGE|QUERY_ALL_PACKAGES|ACCESS_BACKGROUND_LOCATION|REQUEST_INSTALL_PACKAGES|READ_MEDIA_IMAGES|READ_MEDIA_VIDEO|USE_FULL_SCREEN_INTENT|USE_EXACT_ALARM|BIND_ACCESSIBILITY_SERVICE|FOREGROUND_SERVICE_[A-Z_]+)\b/g;
 
 module.exports.project = [
+  {
+    id: 'FRC-AND-004',
+    title: 'INTERNET permission missing from the release manifest',
+    severity: 'high',
+    store: 'play',
+    guide: 'ANDROID.md#internet-permission',
+    message: 'The Flutter template only declares INTERNET in the debug and profile manifests. Network calls work in debug and silently fail in the release build when neither the source manifest nor release manifest merge provides the permission.',
+    fix: 'Add <uses-permission android:name="android.permission.INTERNET"/> to android/app/src/main/AndroidManifest.xml, or ensure a release plugin contributes it through manifest merging.',
+    check(ctx) {
+      if (!INTERNET_DEPENDENCIES.test(ctx.pubspec.text)) return [];
+      const manifest = ctx.mergedManifest || ctx.files.find((f) => MAIN_MANIFEST.test(f));
+      if (!manifest) return [];
+      const text = ctx.read(manifest);
+      if (!text || /android\.permission\.INTERNET/.test(text)) return [];
+      const m = /<manifest\b/.exec(text);
+      return m ? [ctx.lead(manifest, text, m.index)] : [];
+    },
+  },
+  {
+    id: 'FRC-AND-005',
+    title: 'Permission that needs a Play Console declaration',
+    severity: 'medium',
+    store: 'play',
+    guide: 'ANDROID.md#restricted-permissions',
+    message: 'Google Play restricts this permission. Without a matching use case and a declaration form in Play Console, the release is rejected or the app is removed later.',
+    fix: 'Remove it if a narrower API exists (photo picker instead of READ_MEDIA_*, intent instead of SMS), otherwise fill in the Play Console declaration and show the feature in the review video.',
+    check(ctx) {
+      const manifests = ctx.mergedManifest ? [ctx.mergedManifest] : ctx.files.filter((f) => ANY_MANIFEST.test(f));
+      const hits = [];
+      for (const file of manifests) {
+        const text = ctx.read(file);
+        if (!text) continue;
+        const re = new RegExp(RESTRICTED_PERMISSION.source, RESTRICTED_PERMISSION.flags);
+        let m;
+        while ((m = re.exec(text)) !== null) hits.push(ctx.lead(file, text, m.index));
+      }
+      return hits;
+    },
+  },
   {
     id: 'FRC-POL-001',
     title: 'Account creation without in-app account deletion',
